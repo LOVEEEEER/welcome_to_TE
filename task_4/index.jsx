@@ -1,48 +1,56 @@
-import { useState } from "react";
+import React, { useState, createContext, useContext } from "react";
 
-export const Block1 = ({ mouseEnterCallbak, imgSrc, imgAlt }) => {
+const BlockContext = createContext();
+
+export const useBlockContext = () => {
+  const context = useContext(BlockContext);
+  if (!context) {
+    throw new Error("useBlockContext must be used within a BlockProvider");
+  }
+  return context;
+};
+
+export const BlockProvider = ({ children }) => {
   const [isActive, setActive] = useState(false);
 
-  const mouseEnterHandler = () => {
+  const handleMouseEnter = () => {
     setActive(true);
-    mouseEnterCallbak();
   };
 
+  const contextValue = {
+    isActive,
+    handleMouseEnter,
+  };
+
+  return <BlockContext.Provider value={contextValue}>{children}</BlockContext.Provider>;
+};
+
+export const BlockWrapper = ({ children }) => {
+  const { isActive, handleMouseEnter } = useBlockContext();
+
   return (
-    <div onMouseEnter={mouseEnterHandler} className={isActive ? "active" : ""}>
-      <img src={imgSrc} alt={imgAlt} />
+    <div onMouseEnter={handleMouseEnter} className={isActive ? "active" : ""}>
+      {children}
     </div>
   );
 };
 
-export const Block2 = ({ mouseEnterCallbak, content }) => {
-  const [isActive, setActive] = useState(false);
+export const Block1 = ({ imgSrc, imgAlt }) => (
+  <BlockWrapper>
+    <img src={imgSrc} alt={imgAlt} />
+  </BlockWrapper>
+);
 
-  const mouseEnterHandler = () => {
-    setActive(true);
-    mouseEnterCallbak();
-  };
+export const Block2 = ({ content }) => (
+  <BlockWrapper>
+    <p>{content}</p>
+  </BlockWrapper>
+);
 
-  return (
-    <div onMouseEnter={mouseEnterHandler} className={isActive ? "active" : ""}>
-      <p>{content}</p>
-    </div>
-  );
-};
-
-export const Block3 = ({ mouseEnterCallbak, userData }) => {
-  const [isActive, setActive] = useState(false);
-
-  const mouseEnterHandler = () => {
-    setActive(true);
-    mouseEnterCallbak();
-  };
-
-  return (
-    <div onMouseEnter={mouseEnterHandler} className={isActive ? "active" : ""}>
-      <address>
-        country: {userData.country}, street: {userData.street}
-      </address>
-    </div>
-  );
-};
+export const Block3 = ({ userData }) => (
+  <BlockWrapper>
+    <address>
+      country: {userData.country}, street: {userData.street}
+    </address>
+  </BlockWrapper>
+);
