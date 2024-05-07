@@ -44,4 +44,15 @@ const BALLONS: { [key: string]: BallonI } = {
 	},
 };
 
-// Ваш код здесь
+const getIsPublicCountBalloonsAmount = async () => {
+    const publicBalloons = Object.values(BALLOONS).filter(balloon => balloon.isPublic);
+    
+    let totalAmount = 0;
+    for (const balloon of publicBalloons) {
+        const amount = await fetchBallonAmount(balloon.id);
+        totalAmount += amount;
+    }
+
+    console.log('Total amount of public balloons:', totalAmount);
+};
+
