@@ -1,4 +1,5 @@
 'use client';
+// Кстати недавно использовал useSwr https://github.com/LOVEEEEER/test-task
 
 import { useState } from 'react';
 import useSWR from 'swr';
@@ -23,7 +24,7 @@ const ComponentOne = () => {
 };
 
 const ComponentTwo = () => {
-    const { data } = useSWR('custom_key_2', () => fetchOnePost({ delayMS: 2000 }));
+    const { data } = useSWR('custom_key_2', () => fetchOnePost({ delayMS: 2000 }), { revalidateOnMount: true });
     //...some logic
 
     return data ? (
@@ -55,3 +56,4 @@ export default function Home() {
         </main>
     );
 }
+
